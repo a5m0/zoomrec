@@ -431,8 +431,8 @@ def join(meet_id, meet_pw, duration, description):
         filename = os.path.join(
             REC_PATH, time.strftime(TIME_FORMAT)) + "-" + description + "-JOIN.mkv"
 
-        command = "ffmpeg -nostats -loglevel quiet -f pulse -ac 2 -i 1 -f x11grab -r 30 -s " + resolution + " -i " + \
-                  disp + " -acodec pcm_s16le -vcodec libx264rgb -preset ultrafast -crf 0 -threads 0 -async 1 -vsync 1 " + filename
+        command = "ffmpeg -nostats -loglevel quiet -f pulse -ac 2 -i 1 -f x11grab -r 15 -s " + resolution + " -i " + \
+                  disp + " -acodec libopus -b:a 64k -vcodec libx264 -preset ultrafast -crf 32 -tune stillimage -threads 0 -async 1 -vsync 1 " + filename
 
         ffmpeg_debug = subprocess.Popen(
             command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
@@ -734,7 +734,7 @@ def join(meet_id, meet_pw, duration, description):
         try:
             # speaker view
             x, y = pyautogui.locateCenterOnScreen(os.path.join(
-                IMG_PATH, 'speaker_view.png'), confidence=0.9)
+                IMG_PATH, 'speaker_view.png'), confidence=0.5)
             pyautogui.click(x, y)
         except TypeError:
             logging.error("Could not switch speaker view!")
@@ -754,8 +754,8 @@ def join(meet_id, meet_pw, duration, description):
                     TIME_FORMAT) + "-" + description) + "_minimize_error.png")
 
     # Move mouse from screen
-    pyautogui.moveTo(0, 0)
-    pyautogui.click(0, 0)
+    pyautogui.moveTo(0, 100)
+    pyautogui.click(0, 100)
 
     if DEBUG and ffmpeg_debug is not None:
         os.killpg(os.getpgid(ffmpeg_debug.pid), signal.SIGQUIT)
@@ -772,8 +772,8 @@ def join(meet_id, meet_pw, duration, description):
     resolution = str(width) + 'x' + str(height)
     disp = os.getenv('DISPLAY')
 
-    command = "ffmpeg -nostats -loglevel error -f pulse -ac 2 -i 1 -f x11grab -r 30 -s " + resolution + " -i " + \
-              disp + " -acodec pcm_s16le -vcodec libx264rgb -preset ultrafast -crf 0 -threads 0 -async 1 -vsync 1 " + filename
+    command = "ffmpeg -nostats -loglevel error -f pulse -ac 2 -i 1 -f x11grab -r 15 -s " + resolution + " -i " + \
+              disp + " -acodec libopus -b:a 64k -vcodec libx264 -preset ultrafast -crf 30 -tune stillimage -threads 0 -async 1 -vsync 1 " + filename
 
     ffmpeg = subprocess.Popen(
         command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
@@ -933,7 +933,7 @@ if __name__ == '__main__':
 
 while True:
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(30)
     time_of_next_run = schedule.next_run()
     time_now = datetime.now()
     remaining = time_of_next_run - time_now

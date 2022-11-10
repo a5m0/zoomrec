@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Zoomrec specific
+meetings.csv
+/audio
+/recordings
+
 # C extensions
 *.so
 
