@@ -7,6 +7,15 @@ __pycache__/
 meetings.csv
 /audio
 /recordings
+.ICEauthority
+.Xauthority
+xfce.log
+/.config
+/.cache
+/.dbus
+/.vnc
+/img
+/.zoom
 
 # C extensions
 *.so
