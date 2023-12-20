@@ -12,6 +12,7 @@ import time
 import atexit
 import requests
 from datetime import datetime, timedelta
+from security import safe_command
 
 global ONGOING_MEETING
 global VIDEO_PANEL_HIDED
@@ -434,8 +435,7 @@ def join(meet_id, meet_pw, duration, description):
         command = "ffmpeg -nostats -loglevel quiet -f pulse -ac 2 -i 1 -f x11grab -r 15 -s " + resolution + " -i " + \
                   disp + " -acodec libopus -b:a 64k -vcodec libx264 -preset ultrafast -crf 32 -tune stillimage -threads 0 -async 1 -vsync 1 " + filename
 
-        ffmpeg_debug = subprocess.Popen(
-            command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+        ffmpeg_debug = safe_command.run(subprocess.Popen, command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
         atexit.register(os.killpg, os.getpgid(
             ffmpeg_debug.pid), signal.SIGQUIT)
 
@@ -446,12 +446,12 @@ def join(meet_id, meet_pw, duration, description):
 
     if not join_by_url:
         # Start Zoom
-        zoom = subprocess.Popen("zoom", stdout=subprocess.PIPE,
+        zoom = safe_command.run(subprocess.Popen, "zoom", stdout=subprocess.PIPE,
                                 shell=True, preexec_fn=os.setsid)
         img_name = 'join_meeting.png'
     else:
         logging.info("Starting zoom with url")
-        zoom = subprocess.Popen(f'zoom --url="{meet_id}"', stdout=subprocess.PIPE,
+        zoom = safe_command.run(subprocess.Popen, f'zoom --url="{meet_id}"', stdout=subprocess.PIPE,
                                 shell=True, preexec_fn=os.setsid)
         img_name = 'join.png'
     
@@ -775,8 +775,7 @@ def join(meet_id, meet_pw, duration, description):
     command = "ffmpeg -nostats -loglevel error -f pulse -ac 2 -i 1 -f x11grab -r 15 -s " + resolution + " -i " + \
               disp + " -acodec libopus -b:a 64k -vcodec libx264 -preset ultrafast -crf 30 -tune stillimage -threads 0 -async 1 -vsync 1 " + filename
 
-    ffmpeg = subprocess.Popen(
-        command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+    ffmpeg = safe_command.run(subprocess.Popen, command, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
 
     atexit.register(os.killpg, os.getpgid(
         ffmpeg.pid), signal.SIGQUIT)
@@ -836,7 +835,7 @@ def play_audio(description):
         path = os.path.join(AUDIO_PATH, file)
         # Use paplay to play .wav file on specific Output
         command = "/usr/bin/paplay --device=microphone -p " + path
-        play = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        play = safe_command.run(subprocess.Popen, command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res, err = play.communicate()
         if play.returncode != 0:
             logging.error("Failed playing file! - " + str(play.returncode) + " - " + str(err))
