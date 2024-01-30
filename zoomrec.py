@@ -201,7 +201,7 @@ def send_telegram_message(text):
     tries = 0
     done = False
     while not done:
-        results = requests.get(url_req)
+        results = requests.get(url_req, timeout=60)
         results = results.json()
         done = 'ok' in results and results['ok']
         tries+=1
