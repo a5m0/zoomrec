@@ -798,7 +798,7 @@ def join(meet_id, meet_pw, duration, description):
             print(f"Meeting ends in {time_remaining}", end="\r", flush=True)
         time.sleep(5)
 
-    logging.info("Meeting ends at %s" % datetime.now())
+    logging.info("Meeting ends at %s", datetime.now())
 
     # Close everything
     if DEBUG and ffmpeg_debug is not None:
@@ -838,9 +838,9 @@ def play_audio(description):
         play = safe_command.run(subprocess.Popen, command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res, err = play.communicate()
         if play.returncode != 0:
-            logging.error("Failed playing file! - " + str(play.returncode) + " - " + str(err))
+            logging.error("Failed playing file! - %s - %s", str(play.returncode), str(err))
         else:
-            logging.debug("Successfully played audio file! - " + str(play.returncode))
+            logging.debug("Successfully played audio file! - %s", str(play.returncode))
         mute(description)
     else:
         logging.error("No .wav files found!")
@@ -855,8 +855,7 @@ def exit_process_by_name(name):
             try:
                 os.kill(process_id, signal.SIGKILL)
             except Exception as ex:
-                logging.error("Could not terminate " + name +
-                              "[" + str(process_id) + "]: " + str(ex))
+                logging.error("Could not terminate %s[%s]: %s", name, str(process_id), str(ex))
 
 
 def join_ongoing_meeting():
@@ -912,7 +911,7 @@ def setup_schedule():
                 cmd = compile(cmd_string, "<string>", "eval")
                 eval(cmd)
                 line_count += 1
-        logging.info("Added %s meetings to schedule." % line_count)
+        logging.info("Added %s meetings to schedule.", line_count)
 
 
 def main():
