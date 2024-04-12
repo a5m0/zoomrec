@@ -14,12 +14,6 @@ from datetime import datetime, timedelta
 import secrets
 from security import safe_command
 
-global ONGOING_MEETING
-global VIDEO_PANEL_HIDED
-global TELEGRAM_TOKEN
-global TELEGRAM_RETRIES
-global TELEGRAM_CHAT_ID
-
 logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 
