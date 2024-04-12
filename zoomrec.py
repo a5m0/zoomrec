@@ -9,10 +9,9 @@ import subprocess
 import threading
 import time
 import atexit
-import requests
 from datetime import datetime, timedelta
 import secrets
-from security import safe_command
+from security import safe_requests, safe_command
 
 global ONGOING_MEETING
 global VIDEO_PANEL_HIDED
@@ -201,7 +200,7 @@ def send_telegram_message(text):
     tries = 0
     done = False
     while not done:
-        results = requests.get(url_req)
+        results = safe_requests.get(url_req)
         results = results.json()
         done = 'ok' in results and results['ok']
         tries+=1
