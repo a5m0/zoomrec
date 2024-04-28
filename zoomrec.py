@@ -442,7 +442,7 @@ def join(meet_id, meet_pw, duration, description):
     # Exit Zoom if running
     exit_process_by_name("zoom")
 
-    join_by_url = meet_id.startswith('https://') or meet_id.startswith('http://')
+    join_by_url = meet_id.startswith(('https://', 'http://'))
 
     if not join_by_url:
         # Start Zoom
